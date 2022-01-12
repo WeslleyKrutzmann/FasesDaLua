@@ -1,0 +1,40 @@
+﻿<Window x:Class="FasesDaLua.Moon"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:FasesDaLua"
+        xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
+        mc:Ignorable="d" 
+        Height="450" 
+        Width="800"
+        Title="Page1"
+        Background="Transparent"
+        WindowState="Maximized"
+        WindowStyle="None"
+        SnapsToDevicePixels="True">
+
+    <Grid Name="gdRoot">
+
+        <Grid>
+            
+            <HelixToolkit:HelixViewport3D x:Name="moonView" 
+                                          ZoomExtentsWhenLoaded="True"
+                                          FixedRotationPointEnabled="False"
+                                          ViewCubeFrontText="L">
+
+                <HelixToolkit:SunLight Ambient="0.1"
+                                       Altitude="0"
+                                       Brightness="1"
+                                       Azimuth="-200"
+                                       ShowLights="false"
+                                       x:Name="sun"/>
+
+                <HelixToolkit:SphereVisual3D x:Name="moonSphere"/>
+
+            </HelixToolkit:HelixViewport3D>
+        </Grid>
+
+    </Grid>
+
+</Window>

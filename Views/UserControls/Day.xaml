@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="FasesDaLua.Views.UserControls.DayControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FasesDaLua.Views.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" 
+             d:DesignWidth="70"
+             Name="dayControl">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height=".3*"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="#f29c8c">
+
+            <TextBlock Foreground="{Binding Path=Foreground, ElementName=dayControl}"
+                       FontSize="{Binding Path=FontSize, ElementName=dayControl}"
+                       Text="{Binding Day, ElementName=dayControl}"
+                       TextAlignment="Center"
+                       VerticalAlignment="Center"/>
+
+        </Border>
+
+        <Border Grid.Row="1"
+                BorderBrush="#f29c8c"
+                BorderThickness="1, 0, 1, 1">
+
+            <Grid Background="#422823">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height=".2*"/>
+                    <RowDefinition Height=".2*"/>
+                </Grid.RowDefinitions>
+                
+                <Image Name="imgMoonPhase"
+                       Stretch="Uniform"
+                       Margin="0,5,0,0"/>
+
+                <TextBlock Foreground="White"
+                           FontSize="{Binding Path=FontSize, ElementName=dayControl}"
+                           Text=""
+                           Name="txtDayOfWeek"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Grid.Row="1"/>
+
+                <TextBlock Foreground="White"
+                           FontSize="{Binding Path=FontSize, ElementName=dayControl}"
+                           Text=""
+                           Name="txtMoonPhase"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Grid.Row="2"/>
+
+            </Grid>
+            
+        </Border>
+        
+    </Grid>
+</UserControl>

@@ -1,0 +1,97 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\bgCalendar.svg" />
+    <None Remove="Images\Lua.png" />
+    <None Remove="Images\MoonPhases\01.png" />
+    <None Remove="Images\MoonPhases\02.png" />
+    <None Remove="Images\MoonPhases\03.png" />
+    <None Remove="Images\MoonPhases\04.png" />
+    <None Remove="Images\MoonPhases\05.png" />
+    <None Remove="Images\MoonPhases\06.png" />
+    <None Remove="Images\MoonPhases\07.png" />
+    <None Remove="Images\MoonPhases\08.png" />
+    <None Remove="Images\MoonPhases\09.png" />
+    <None Remove="Images\MoonPhases\10.png" />
+    <None Remove="Images\MoonPhases\11.png" />
+    <None Remove="Images\MoonPhases\12.png" />
+    <None Remove="Images\MoonPhases\13.png" />
+    <None Remove="Images\MoonPhases\14.png" />
+    <None Remove="Images\MoonPhases\15.png" />
+    <None Remove="Images\MoonPhases\16.png" />
+    <None Remove="Images\MoonPhases\17.png" />
+    <None Remove="Images\MoonPhases\18.png" />
+    <None Remove="Images\MoonPhases\19.png" />
+    <None Remove="Images\MoonPhases\20.png" />
+    <None Remove="Images\MoonPhases\21.png" />
+    <None Remove="Images\MoonPhases\22.png" />
+    <None Remove="Images\MoonPhases\23.png" />
+    <None Remove="Images\MoonPhases\24.png" />
+    <None Remove="Images\MoonPhases\25.png" />
+    <None Remove="Images\MoonPhases\26.png" />
+    <None Remove="Images\MoonPhases\27.png" />
+    <None Remove="Images\MoonPhases\28.png" />
+    <None Remove="Images\MoonPhases\29.png" />
+    <None Remove="moon.jpg" />
+    <None Remove="stars.jpg" />
+    <None Remove="world.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\bgCalendar.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Images\MoonPhases\01.png" />
+    <EmbeddedResource Include="Images\MoonPhases\02.png" />
+    <EmbeddedResource Include="Images\MoonPhases\03.png" />
+    <EmbeddedResource Include="Images\MoonPhases\04.png" />
+    <EmbeddedResource Include="Images\MoonPhases\05.png" />
+    <EmbeddedResource Include="Images\MoonPhases\06.png" />
+    <EmbeddedResource Include="Images\MoonPhases\07.png" />
+    <EmbeddedResource Include="Images\MoonPhases\08.png" />
+    <EmbeddedResource Include="Images\MoonPhases\09.png" />
+    <EmbeddedResource Include="Images\MoonPhases\10.png" />
+    <EmbeddedResource Include="Images\MoonPhases\11.png" />
+    <EmbeddedResource Include="Images\MoonPhases\12.png" />
+    <EmbeddedResource Include="Images\MoonPhases\13.png" />
+    <EmbeddedResource Include="Images\MoonPhases\14.png" />
+    <EmbeddedResource Include="Images\MoonPhases\15.png" />
+    <EmbeddedResource Include="Images\MoonPhases\16.png" />
+    <EmbeddedResource Include="Images\MoonPhases\17.png" />
+    <EmbeddedResource Include="Images\MoonPhases\18.png" />
+    <EmbeddedResource Include="Images\MoonPhases\19.png" />
+    <EmbeddedResource Include="Images\MoonPhases\20.png" />
+    <EmbeddedResource Include="Images\MoonPhases\21.png" />
+    <EmbeddedResource Include="Images\MoonPhases\22.png" />
+    <EmbeddedResource Include="Images\MoonPhases\23.png" />
+    <EmbeddedResource Include="Images\MoonPhases\24.png" />
+    <EmbeddedResource Include="Images\MoonPhases\25.png" />
+    <EmbeddedResource Include="Images\MoonPhases\26.png" />
+    <EmbeddedResource Include="Images\MoonPhases\27.png" />
+    <EmbeddedResource Include="Images\MoonPhases\28.png" />
+    <EmbeddedResource Include="Images\MoonPhases\29.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="moon.jpg" />
+    <Resource Include="stars.jpg" />
+    <Resource Include="world.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HelixToolkit.Wpf" Version="2.20.0" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="8.5.0" />
+    <PackageReference Include="Magick.NET.SystemWindowsMedia" Version="4.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Lua.png" />
+  </ItemGroup>
+
+</Project>

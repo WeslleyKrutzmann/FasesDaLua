@@ -1,0 +1,119 @@
+﻿<lc:WindowBase x:Class="FasesDaLua.Calendar"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:lc="clr-namespace:FasesDaLua.Views"
+               xmlns:cv="clr-namespace:FasesDaLua.Domain.Converters"
+               mc:Ignorable="d"
+               Title="Calendar" 
+               Height="450"
+               Width="950"
+               WindowStyle="None"
+               WindowState="Maximized"
+               SnapsToDevicePixels="True"
+               ShowInTaskbar="False">
+
+    <lc:WindowBase.Resources>
+        <cv:NotBooleanConverter x:Key="NotBooleanConverterKey"/>
+    </lc:WindowBase.Resources>
+    
+    <Grid Name="gdRoot"
+          Background="Gray">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Name="gdCcalendar"
+              Background="#f29c8c">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height=".1*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="{Binding MonthYearReference}"
+                       Foreground="Black"
+                       FontSize="26"
+                       FontFamily="Segoe UI"
+                       Grid.Row="0"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+
+            <Grid Grid.Row="1">
+
+                <InkCanvas Name="inkCalendar"
+                           EditingMode="Select"
+                           MoveEnabled="False"
+                           ResizeEnabled="False">
+
+                    <InkCanvas.Background>
+                        
+                        <ImageBrush Stretch="UniformToFill"
+                                    x:Name="imgBackground"/>
+                        
+                    </InkCanvas.Background>
+                    
+                </InkCanvas>
+
+            </Grid>
+            
+        </Grid>
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Margin="0,10,10,0">
+
+            <TextBlock Text="Year"
+                       FontSize="12"/>
+
+            <TextBox Name="txtYear"
+                     Height="30"
+                     Margin="0,5,0,0"
+                     VerticalContentAlignment="Center"
+                     TabIndex="0"
+                     Text="{Binding Year}"/>
+
+            <TextBlock Text="Months"
+                       FontSize="12"
+                       Margin="0,10,0,0"/>
+
+            <TextBox Name="txtMonths"
+                     Height="35"
+                     Margin="0,5,0,0"
+                     VerticalContentAlignment="Center"
+                     TabIndex="1"
+                     ToolTip="Separate the months by ','"
+                     IsEnabled="{Binding IsCreateFullCalendar, Converter={StaticResource NotBooleanConverterKey}}"
+                     Text="{Binding Months}"/>
+
+            <CheckBox Content="Generate full calendar"
+                      IsChecked="{Binding IsCreateFullCalendar}"
+                      Margin="0,10,0,0"
+                      Name="ckbGenerateFullCalendar"/>
+
+            <Button Content="Create Calendar"
+                    Name="btnCreateCalendar"
+                    Grid.ColumnSpan="2"
+                    VerticalAlignment="Bottom"
+                    Height="30"
+                    Margin="0,10,0,0"
+                    Click="BtnCreateCalendar_Click"/>
+
+            <Button Content="Cancel"
+                    Name="btnCancel"
+                    Grid.ColumnSpan="2"
+                    VerticalAlignment="Bottom"
+                    Height="30"
+                    Margin="0,10,0,0"
+                    Click="BtnCancel_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+    
+</lc:WindowBase>
