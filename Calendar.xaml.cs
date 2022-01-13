@@ -57,6 +57,7 @@ namespace FasesDaLua
             }
         }
         public Size DayControlSize { get; set; }
+        public CalendarConfiguration CalendarConfiguration { get; private set; }
         public double HorizontalGap { get; set; }
         public double VerticalGap { get; set; }
         public DayOfWeek LastDayOfWeek { get; set; }
@@ -69,6 +70,9 @@ namespace FasesDaLua
                 this.NotifyPropertyChanged(nameof(this.MonthYearReference));
             }
         }
+
+        public Month CurrentMonth { get; private set; }
+        public Queue<Month> MonthsQueue { get; private set; }
 
         public Calendar(Window owner)
         {
@@ -158,70 +162,113 @@ namespace FasesDaLua
         {
             this.DayControlSize = this.GetDayControlSize();
 
-            var calendarConfiguration = new CalendarConfiguration
+            this.CalendarConfiguration = new CalendarConfiguration
             {
                 ReferenceYear = this.Year,
                 Months = this.GetMonths(this.Months),
                 IsCreateFullCalendar = this.IsCreateFullCalendar,
                 DayControlSize = this.DayControlSize,
-                FirstMoonPhase = MoonPhase.Moon_29
+                FirstNewMoonDate = new DateTime(2022, 1, 2)
             };
 
-            this.CreateCalendarAsync(calendarConfiguration);
+            this.CreateCalendarAsync();
         }
 
-        private void CreateCalendarAsync(CalendarConfiguration calendarConfiguration)
+        private void CreateCalendarAsync()
         {
             using (var cg = new CalendarGenerator())
             {
                 this.inkCalendar.Children.Clear();
 
-                var days = cg.GetDays(calendarConfiguration);
+                this.CalendarConfiguration.Days = cg.GetDays(this.CalendarConfiguration);
 
-                if (days != null && days.Count > 0)
+                if (this.CalendarConfiguration.Days != null && this.CalendarConfiguration.Days.Count > 0)
                 {
-                    var months = calendarConfiguration.Months;
-
-                    if (calendarConfiguration.IsCreateFullCalendar)
+                    if (this.CalendarConfiguration.Months != null && this.CalendarConfiguration.Months.Count > 0)
                     {
-                        months = new List<Month> { Month.January, Month.February, Month.March, Month.April, Month.May, Month.June, Month.July, Month.August, Month.September, Month.October, Month.November, Month.December };
+                        this.MonthsQueue = new Queue<Month>(this.CalendarConfiguration.Months);
                     }
 
-                    this.AddDaysToCalendar(days, months, calendarConfiguration.ReferenceYear);
+                    if (this.CalendarConfiguration.IsCreateFullCalendar)
+                    {
+                        var months = new List<Month> { Month.January, Month.February, Month.March, Month.April, Month.May, Month.June, Month.July, Month.August, Month.September, Month.October, Month.November, Month.December };
+                        this.MonthsQueue = new Queue<Month>();
+
+                        foreach (var month in months)
+                        {
+                            this.MonthsQueue.Enqueue(month);
+                        }
+                    }
+
+                    this.AddDaysToCalendar(this.MonthsQueue.Dequeue());
                 }
             }
         }
 
-        private void AddDaysToCalendar(List<DayControl> days, List<Month> months, int referenceYear)
+        private void AddDaysToCalendar(Month month)
         {
-            foreach (var month in months)
+            this.inkCalendar.Children.Clear();
+
+            this.MonthYearReference = this.GetMonthYearReference(month, this.CalendarConfiguration.ReferenceYear);
+            this.CurrentMonth = month;
+
+            var daysInMonth = this.CalendarConfiguration.Days.Where(d => d.Month == month).ToList();
+            var currentWeek = 1;
+
+            foreach (var day in daysInMonth)
             {
-                this.MonthYearReference = this.GetMonthYearReference(month, referenceYear);
+                var position = this.GetDayPosition(day, currentWeek);
 
-                var daysInMonth = days.Where(d => d.Month == month).ToList();
-                var currentWeek = 1;
+                InkCanvas.SetLeft(day, position.X);
+                InkCanvas.SetTop(day, position.Y);
 
-                foreach (var day in daysInMonth)
+                this.inkCalendar.Children.Add(day);
+                this.LastDayOfWeek = day.DayOfWeek;
+
+                if (this.LastDayOfWeek == DayOfWeek.Saturday)
                 {
-                    var position = this.GetDayPosition(day, currentWeek);
+                    currentWeek++;
+                }
 
-                    InkCanvas.SetLeft(day, position.X);
-                    InkCanvas.SetTop(day, position.Y);
-
-                    this.inkCalendar.Children.Add(day);
-                    this.LastDayOfWeek = day.DayOfWeek;
-
-                    if (this.LastDayOfWeek == DayOfWeek.Saturday)
-                    {
-                        currentWeek++;
-                    }
+                if (daysInMonth.IndexOf(day) == (daysInMonth.Count - 1))
+                {
+                    day.MoonImageLoaded += Day_MoonImageLoaded;
                 }
             }
+
+            this.gdCcalendar.UpdateLayout();
+        }
+
+        private void Day_MoonImageLoaded(object sender, RoutedEventArgs e)
+        {
+            this.SaveCalendar(this.CurrentMonth);
+            this.AddDaysToCalendar(this.MonthsQueue.Dequeue());
+        }
+        
+        private void Day_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void SaveCalendar(Month month)
+        {
+            var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Calendar");
+
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            var filePath = Path.Combine(directory, $"{month}.png");
+
+            var imageSize = new Size(this.gdCcalendar.ActualWidth, this.gdCcalendar.ActualHeight);
+
+            VisualUtils.SaveVisualBitmap(this.gdCcalendar, imageSize, filePath);
         }
 
         private string GetMonthYearReference(Month month, int referenceYear)
         {
-            return $"{month} {referenceYear}";
+            return $"{DateTimeUtils.GetMonthDescription(month)} - {referenceYear}";
         }
 
         private Point GetDayPosition(DayControl day, int currentWeek)
