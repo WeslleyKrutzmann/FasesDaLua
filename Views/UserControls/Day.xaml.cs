@@ -68,6 +68,8 @@ namespace FasesDaLua.Views.UserControls
         public int DayOfYear { get => this.Date.DayOfYear; }
         public MoonPhase Moon { get; set; }
 
+        public event EventHandler<RoutedEventArgs> MoonImageLoaded;
+
         public DayControl(int year, int month, int day, MoonPhase moon)
         {
             this.InitializeComponent();
@@ -87,46 +89,20 @@ namespace FasesDaLua.Views.UserControls
         {
             switch (moon)
             {
-                case MoonPhase.Unknown:
-                case MoonPhase.Moon_02:
-                case MoonPhase.Moon_03:
-                case MoonPhase.Moon_05:
-                case MoonPhase.Moon_06:
-                case MoonPhase.Moon_07:
-                case MoonPhase.Moon_08:
-                case MoonPhase.Moon_09:
-                case MoonPhase.Moon_10:
-                case MoonPhase.Moon_11:
-                case MoonPhase.Moon_12:
-                case MoonPhase.Moon_13:
-                case MoonPhase.Moon_14:
-                case MoonPhase.Moon_16:
-                case MoonPhase.Moon_17:
-                case MoonPhase.Moon_18:
-                case MoonPhase.Moon_19:
-                case MoonPhase.Moon_20:
-                case MoonPhase.Moon_21:
-                case MoonPhase.Moon_22:
-                case MoonPhase.Moon_23:
-                case MoonPhase.Moon_24:
-                case MoonPhase.Moon_25:
-                case MoonPhase.Moon_26:
-                case MoonPhase.Moon_28:
-                case MoonPhase.Moon_29:
-                default:
-                    return "";
-
-                case MoonPhase.Moon_01:
+                case MoonPhase.NewMoon:
                     return "Nova";
 
-                case MoonPhase.Moon_04:
+                case MoonPhase.CrescentMoon:
                     return "Crescente";
 
-                case MoonPhase.Moon_15:
+                case MoonPhase.FullMoon:
                     return "Cheia";
 
-                case MoonPhase.Moon_27:
+                case MoonPhase.WaningMoon:
                     return "Minguante";
+
+                default:
+                    return "";
             }
         }
 
@@ -167,14 +143,12 @@ namespace FasesDaLua.Views.UserControls
 
         private void GetMoonImage(MoonPhase moon)
         {
-            if (moon != MoonPhase.Unknown)
+            if (moon != MoonPhase.None)
             {
                 this.imgMoonPhase.Source = this.GetMoonImageSource(moon);
             }
-            else
-            {
-                throw new ArgumentException("Moon phase not recognized.");
-            }
+
+            this.MoonImageLoaded?.Invoke(this, new RoutedEventArgs());
         }
 
         private BitmapImage GetMoonImageSource(MoonPhase moon)

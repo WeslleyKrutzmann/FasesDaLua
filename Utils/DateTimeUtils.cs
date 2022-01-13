@@ -91,56 +91,45 @@ namespace FasesDaLua.Utils
             }
         }
 
-        public static Month GetMonthDescription(string month)
+        public static string GetMonthDescription(Month month)
         {
             switch (month)
             {
-                case "January":
-                case "Janeiro":
-                    return Month.January;
+                case Month.January:
+                    return "Janeiro";
 
-                case "February":
-                case "Fevereiro":
-                    return Month.February;
+                case Month.February:
+                    return "Fevereiro";
 
-                case "March":
-                case "Março":
-                    return Month.March;
+                case Month.March:
+                    return "Março";
 
-                case "April":
-                case "Abril":
-                    return Month.April;
+                case Month.April:
+                    return "Abril";
 
-                case "May":
-                case "Maio":
-                    return Month.May;
+                case Month.May:
+                    return "Maio";
 
-                case "June":
-                case "Junho":
-                    return Month.June;
+                case Month.June:
+                    return "Junho";
 
-                case "July":
-                case "Julho":
-                    return Month.July;
+                case Month.July:
+                    return "Julho";
 
-                case "August":
-                case "Agosto":
-                    return Month.August;
+                case Month.August:
+                    return "Agosto";
 
-                case "September":
-                case "Setembro":
-                    return Month.September;
+                case Month.September:
+                    return "Setembro";
 
-                case "Outubro":
-                    return Month.October;
+                case Month.October:
+                    return "Outubro";
 
-                case "November":
-                case "Novembro":
-                    return Month.November;
+                case Month.November:
+                    return "Novembro";
 
-                case "December":
-                case "Dezembro":
-                    return Month.December;
+                case Month.December:
+                    return "Dezembro";
 
                 default:
                     throw new NotSupportedException($"Month {month} is not supported.");

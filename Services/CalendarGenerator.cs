@@ -16,26 +16,27 @@ namespace FasesDaLua.Services
     {
         public System.Globalization.Calendar Calendar { get; }
         public Size CalendarSize { get => new Size(768, 1122); }
-        public MoonPhase NextMoonPhase { get; private set; }
+        public MoonPhase LastMoonPhase { get; private set; }
+        public CalendarConfiguration CalendarConfiguration { get; set; }
+        public DateTime LastMoonPhaseDate { get; set; }
+
+        private int DaysToNextMoonPhase { get; set; }
 
         public CalendarGenerator()
         {
             this.Calendar = new GregorianCalendar();
         }
 
-        public List<DayControl> GetDays(int month, int year, Size dayControlSize, MoonPhase firstMoonPhase)
+        public List<DayControl> GetDays(int month, int year, Size dayControlSize)
         {
             var days = this.Calendar.GetDaysInMonth(year, month);
-            this.NextMoonPhase = firstMoonPhase;
-
             return this.GetDays(year, month, days, dayControlSize);
         }
 
-        public List<DayControl> GetDays(int year, Size dayControlSize, MoonPhase firstMoonPhase)
+        public List<DayControl> GetDays(int year, Size dayControlSize)
         {
             var months = this.Calendar.GetMonthsInYear(year);
             var daysPerYear = new List<DayControl>();
-            this.NextMoonPhase = firstMoonPhase;
 
             for (var month = 1; month <= months; month++)
             {
@@ -53,23 +54,22 @@ namespace FasesDaLua.Services
 
         public List<DayControl> GetDays(CalendarConfiguration calendarConfiguration)
         {
-            this.NextMoonPhase = calendarConfiguration.FirstMoonPhase;
+            this.CalendarConfiguration = calendarConfiguration;
 
-            if (calendarConfiguration.IsCreateFullCalendar)
+            if (this.CalendarConfiguration.IsCreateFullCalendar)
             {
-                return this.GetDays(calendarConfiguration.ReferenceYear,
-                                    calendarConfiguration.DayControlSize,
-                                    this.NextMoonPhase);
+                return this.GetDays(this.CalendarConfiguration.ReferenceYear,
+                                    this.CalendarConfiguration.DayControlSize);
             }
 
             var daysPerYear = new List<DayControl>();
 
-            foreach (var month in calendarConfiguration.Months)
+            foreach (var month in this.CalendarConfiguration.Months)
             {
-                var year = calendarConfiguration.ReferenceYear;
+                var year = this.CalendarConfiguration.ReferenceYear;
 
                 var days = this.GetDaysInMonth(year, (int)month);
-                var daysPerMonth = this.GetDays(year, (int)month, days, calendarConfiguration.DayControlSize);
+                var daysPerMonth = this.GetDays(year, (int)month, days, this.CalendarConfiguration.DayControlSize);
 
                 if (daysPerMonth != null && daysPerMonth.Count > 0)
                 {
@@ -111,7 +111,18 @@ namespace FasesDaLua.Services
 
             for (var day = 1; day <= days; day++)
             {
-                var dayControl = new DayControl(year, month, day, this.NextMoonPhase);
+                var currentDateTime = new DateTime(year, month, day);
+
+                var moonPhase = this.GetMoonPhase(currentDateTime);
+
+                if (moonPhase != MoonPhase.None)
+                {
+                    this.LastMoonPhase = moonPhase;
+                    this.LastMoonPhaseDate = currentDateTime;
+                    this.DaysToNextMoonPhase = this.GetDaysToNextMoon(moonPhase);
+                }
+
+                var dayControl = new DayControl(year, month, day, moonPhase);
 
                 if (dayControl != null)
                 {
@@ -120,20 +131,62 @@ namespace FasesDaLua.Services
 
                     dayPerMonth.Add(dayControl);
                 }
-
-                var moonValue = (int)this.NextMoonPhase;
-
-                if (moonValue < 29)
-                {
-                    this.NextMoonPhase = (MoonPhase)(moonValue + 1);
-                }
-                else
-                {
-                    this.NextMoonPhase = (MoonPhase)1;
-                }
             }
 
             return dayPerMonth;
+        }
+
+        private int GetDaysToNextMoon(MoonPhase moonPhase)
+        {
+            switch (moonPhase)
+            {
+                case MoonPhase.NewMoon:
+                    return 7;
+
+                case MoonPhase.CrescentMoon:
+                case MoonPhase.FullMoon:
+                case MoonPhase.WaningMoon:
+                    return 8;
+
+                default:
+                    throw new NotSupportedException($"Moon phase {moonPhase} is not supported in this method.");
+            }
+        }
+
+        private MoonPhase GetMoonPhase(DateTime currentDateTime)
+        {
+            if (currentDateTime == this.CalendarConfiguration.FirstNewMoonDate)
+            {
+                return MoonPhase.NewMoon;
+            }
+
+            if (currentDateTime == (this.LastMoonPhaseDate.AddDays(this.DaysToNextMoonPhase)))
+            {
+                return this.GetNextMoonPhase(this.LastMoonPhase);
+            }
+
+            return MoonPhase.None;
+        }
+
+        private MoonPhase GetNextMoonPhase(MoonPhase lastMoonPhase)
+        {
+            switch (lastMoonPhase)
+            {
+                case MoonPhase.NewMoon:
+                    return MoonPhase.CrescentMoon;
+
+                case MoonPhase.CrescentMoon:
+                    return MoonPhase.FullMoon;
+
+                case MoonPhase.FullMoon:
+                    return MoonPhase.WaningMoon;
+
+                case MoonPhase.WaningMoon:
+                    return MoonPhase.NewMoon;
+
+                default:
+                    return MoonPhase.None;
+            }
         }
 
         public FixedDocument GetCalendar(int year)
